@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Pure",
+    "slug": "pure-ai-caddie",
+    "scheme": "com.puregolf.app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/PureAppIcon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#2d5016"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.puregolf.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Pure needs your location to provide accurate distance measurements and course information.",
+        "NSLocationAlwaysUsageDescription": "Pure uses your location to track your position on the golf course."
+      }
+    },
+    "android": {
+      "package": "com.puregolf.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "7cbceb84-10cd-4689-9113-9d8a52ac6a67"
+      }
+    },
+    "owner": "williamsmax",
+    "plugins": [
+      "expo-font",
+      "expo-web-browser"
+    ]
+  }
+}
