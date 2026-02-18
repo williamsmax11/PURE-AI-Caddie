@@ -15,7 +15,7 @@
       "distribution": "internal"
     },
     "production": {
-      "prebuildCommand": "mkdir -p .expo/web"
+      "prebuildCommand": "sh -c 'mkdir -p .expo/web'"
     }
   },
   "submit": {
