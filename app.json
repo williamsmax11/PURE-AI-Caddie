@@ -19,7 +19,8 @@
       "bundleIdentifier": "com.puregolf.app",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Pure needs your location to provide accurate distance measurements and course information.",
-        "NSLocationAlwaysUsageDescription": "Pure uses your location to track your position on the golf course."
+        "NSLocationAlwaysUsageDescription": "Pure uses your location to track your position on the golf course.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -29,10 +30,9 @@
         "ACCESS_COARSE_LOCATION"
       ]
     },
-    "web": {},
     "extra": {
       "eas": {
-        "projectId": "7cbceb84-10cd-4689-9113-9d8a52ac6a67"
+        "projectId": "ee82082a-27db-4da9-a12b-e8302523d9c7"
       }
     },
     "owner": "williamsmax",
