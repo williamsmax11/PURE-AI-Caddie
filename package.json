@@ -14,7 +14,7 @@
     "build:ios:preview": "eas build --platform ios --profile preview",
     "build:ios:prod": "eas build --platform ios --profile production",
     "device:register": "eas device:create",
-    "postinstall": "mkdir -p .expo/web"
+    "eas-build-post-install": "chmod -R 755 .expo 2>/dev/null; mkdir -p .expo/web; echo 'Created .expo/web cache dir'"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
