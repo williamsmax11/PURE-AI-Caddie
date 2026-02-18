@@ -14,9 +14,7 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {
-      "prebuildCommand": "sh -c 'mkdir -p .expo/web'"
-    }
+    "production": {}
   },
   "submit": {
     "production": {

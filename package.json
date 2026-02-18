@@ -13,7 +13,8 @@
     "build:ios:dev": "eas build --platform ios --profile development",
     "build:ios:preview": "eas build --platform ios --profile preview",
     "build:ios:prod": "eas build --platform ios --profile production",
-    "device:register": "eas device:create"
+    "device:register": "eas device:create",
+    "postinstall": "mkdir -p .expo/web"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
