@@ -14,7 +14,7 @@
     "build:ios:preview": "eas build --platform ios --profile preview",
     "build:ios:prod": "eas build --platform ios --profile production",
     "device:register": "eas device:create",
-    "eas-build-pre-install": "mkdir -p .expo/web && echo 'Created .expo/web cache dir'"
+    "eas-build-pre-install": "bash scripts/eas-pre-install.sh"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
