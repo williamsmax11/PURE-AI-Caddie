@@ -33,6 +33,7 @@ import TrainingOverlay from '../components/TrainingOverlay';
 import { fetchRoundHistory } from '../services/roundService';
 import { calculateHandicap } from '../utils/handicapUtils';
 
+const golfHeroImage = require('../assets/golf-ball-and-hole.jpg');
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Contextual AI tips based on user's stats
@@ -219,7 +220,8 @@ export default function HomeScreen({
           title="Start New Round"
           subtitle="Select a course and begin tracking"
           icon="golf"
-          variant="primary"
+          variant="hero"
+          backgroundImage={golfHeroImage}
           onPress={onStartRound}
         />
 

@@ -50,16 +50,16 @@ export const TRAINING_SEQUENCES = {
         icon: 'sparkles-outline',
       },
       {
-        // Start New Round card: below AI tip in scroll content
+        // Start New Round card: hero image card below AI tip in scroll content
         id: 'home_start_round',
         title: 'Start a Round',
         description: 'Tap here to select a course and start tracking your round with AI caddie advice.',
         target: {
           type: 'region',
-          top: 44,
+          top: 49,
           left: 3,
           width: 94,
-          height: 9,
+          height: 19,
         },
         icon: 'play-circle-outline',
       },
@@ -70,10 +70,10 @@ export const TRAINING_SEQUENCES = {
         description: 'After you play rounds, your handicap, average score, and total rounds appear here as visual rings.',
         target: {
           type: 'region',
-          top: 55,
+          top: 70,
           left: 3,
           width: 94,
-          height: 16,
+          height: 18,
         },
         icon: 'stats-chart-outline',
       },

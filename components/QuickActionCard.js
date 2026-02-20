@@ -2,12 +2,12 @@
  * QuickActionCard Component
  *
  * Prominent action cards for primary CTAs like "Start Round" and "Resume Round".
- * Supports primary (green gradient) and warning (amber) variants.
+ * Supports primary (green gradient), warning (amber), and hero (image-backed) variants.
  * Now with press-scale animation and Inter typography.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import PressableScale from './PressableScale';
@@ -18,8 +18,43 @@ export default function QuickActionCard({
   subtitle,
   icon = 'golf',
   onPress,
-  variant = 'primary', // 'primary' | 'warning'
+  variant = 'primary', // 'primary' | 'warning' | 'hero'
+  backgroundImage,
 }) {
+  // Hero variant: image-backed card with gradient overlay
+  if (variant === 'hero' && backgroundImage) {
+    return (
+      <PressableScale onPress={onPress} haptic="light" scaleValue={0.975}>
+        <View style={styles.heroWrapper}>
+          <ImageBackground
+            source={backgroundImage}
+            style={styles.heroImage}
+            imageStyle={styles.heroImageInner}
+            resizeMode="cover"
+          >
+            <LinearGradient
+              colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.25)', 'rgba(0,0,0,0.82)']}
+              locations={[0, 0.35, 1]}
+              style={styles.heroGradient}
+            >
+              <View style={styles.heroContent}>
+                <View style={styles.heroTextSection}>
+                  <Text style={styles.heroTitle}>{title}</Text>
+                  {subtitle && (
+                    <Text style={styles.heroSubtitle}>{subtitle}</Text>
+                  )}
+                </View>
+                <View style={styles.heroPlayButton}>
+                  <Ionicons name="play" size={20} color="#fff" style={{ marginLeft: 2 }} />
+                </View>
+              </View>
+            </LinearGradient>
+          </ImageBackground>
+        </View>
+      </PressableScale>
+    );
+  }
+
   const isPrimary = variant === 'primary';
 
   const cardContent = (
@@ -119,5 +154,77 @@ const styles = StyleSheet.create({
   },
   subtitleWarning: {
     color: theme.colors.text.secondary,
+  },
+
+  // Hero variant styles
+  heroWrapper: {
+    height: 170,
+    borderRadius: theme.borderRadius['2xl'],
+    overflow: 'hidden',
+    marginBottom: theme.spacing.md,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.3,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
+  },
+  heroImage: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  heroImageInner: {
+    borderRadius: theme.borderRadius['2xl'],
+  },
+  heroGradient: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  heroContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+  },
+  heroTextSection: {
+    flex: 1,
+    marginRight: 16,
+  },
+  heroTitle: {
+    fontFamily: theme.fonts.bold,
+    fontSize: 22,
+    color: '#fff',
+    letterSpacing: -0.3,
+  },
+  heroSubtitle: {
+    fontFamily: theme.fonts.regular,
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginTop: 4,
+  },
+  heroPlayButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: theme.colors.primary[500],
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: theme.colors.primary[700],
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
 });

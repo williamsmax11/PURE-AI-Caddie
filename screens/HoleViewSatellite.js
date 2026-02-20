@@ -1551,7 +1551,7 @@ export default function HoleViewSatellite({
         ref={mapRef}
         style={styles.fullScreenMap}
         mapType="satellite"
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         camera={{
           center: {
             latitude: centerLatitude,

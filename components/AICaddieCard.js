@@ -2,15 +2,19 @@
  * AICaddieCard Component
  *
  * Distinctive dark-surface card for AI-generated content.
+ * Features: animated gradient border, shimmer sweep, pulsing sparkle badge.
  * Visually separates AI insights from regular UI content.
- * Features: dark background, green accent border, "Pure AI" badge.
  */
 
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import theme from '../theme';
+
+const BORDER_WIDTH = 1.5;
+const CARD_RADIUS = theme.borderRadius.xl;
+const INNER_RADIUS = CARD_RADIUS - BORDER_WIDTH;
 
 export default function AICaddieCard({
   title,
@@ -18,31 +22,142 @@ export default function AICaddieCard({
   style,
   compact = false,
 }) {
+  const shimmerAnim = useRef(new Animated.Value(0)).current;
+  const glowAnim = useRef(new Animated.Value(0.4)).current;
+
+  useEffect(() => {
+    // Shimmer: pause, sweep left-to-right, reset, repeat
+    const shimmerLoop = Animated.loop(
+      Animated.sequence([
+        Animated.delay(4000),
+        Animated.timing(shimmerAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shimmerAnim, {
+          toValue: 0,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    shimmerLoop.start();
+
+    // Sparkle icon: breathe (scale + opacity)
+    const glowLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(glowAnim, {
+          toValue: 1,
+          duration: 1800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(glowAnim, {
+          toValue: 0,
+          duration: 1800,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    glowLoop.start();
+
+    return () => {
+      shimmerLoop.stop();
+      glowLoop.stop();
+    };
+  }, []);
+
+  const screenWidth = Dimensions.get('window').width;
+  const shimmerTranslateX = shimmerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-screenWidth * 0.6, screenWidth],
+  });
+
+  // Sparkle icon: scale breathe + color shift via opacity layering
+  const sparkleScale = glowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.35],
+  });
+  const sparkleOpacity = glowAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0.6, 1, 0.6],
+  });
+  // Teal layer fades in as green layer fades, creating a color shift
+  const tealOpacity = glowAnim;
+  const greenOpacity = glowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+
+  const radius = compact ? theme.borderRadius.lg : CARD_RADIUS;
+  const innerRadius = compact ? theme.borderRadius.lg - BORDER_WIDTH : INNER_RADIUS;
+
   return (
-    <View style={[styles.container, compact && styles.containerCompact, style]}>
-      {/* Green accent border on left */}
+    <View style={[styles.outerWrapper, compact && styles.outerWrapperCompact, style]}>
+      {/* Gradient border — fills the outer wrapper, visible through the margin gap */}
       <LinearGradient
-        colors={[theme.colors.primary[400], theme.colors.primary[600]]}
-        style={styles.accentBorder}
+        colors={[
+          theme.colors.primary[400],
+          theme.colors.accent.teal,
+          theme.colors.primary[500],
+          theme.colors.accent.teal,
+          theme.colors.primary[400],
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[StyleSheet.absoluteFill, { borderRadius: radius }]}
       />
 
-      <View style={styles.content}>
-        {/* AI Badge */}
-        <View style={styles.badgeRow}>
-          <View style={styles.badge}>
-            <Ionicons name="sparkles" size={12} color={theme.colors.primary[400]} />
-            <Text style={styles.badgeText}>Pure AI</Text>
-          </View>
-          {title && <Text style={styles.title}>{title}</Text>}
-        </View>
+      {/* Inner card with dark background */}
+      <View style={[styles.innerCard, { borderRadius: innerRadius }]}>
+        {/* Shimmer sweep */}
+        <Animated.View
+          style={[
+            styles.shimmerLayer,
+            { transform: [{ translateX: shimmerTranslateX }] },
+          ]}
+          pointerEvents="none"
+        >
+          <LinearGradient
+            colors={[
+              'transparent',
+              'rgba(255, 255, 255, 0.04)',
+              'rgba(255, 255, 255, 0.10)',
+              'rgba(255, 255, 255, 0.04)',
+              'transparent',
+            ]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.shimmerGradient}
+          />
+        </Animated.View>
 
-        {/* Card Content */}
-        <View style={styles.body}>
-          {typeof children === 'string' ? (
-            <Text style={styles.bodyText}>{children}</Text>
-          ) : (
-            children
-          )}
+        {/* Card content */}
+        <View style={styles.content}>
+          {/* Badge + title row */}
+          <View style={styles.badgeRow}>
+            <View style={styles.badge}>
+              <Animated.View style={{ transform: [{ scale: sparkleScale }], opacity: sparkleOpacity }}>
+                <Animated.View style={{ opacity: greenOpacity, position: 'absolute' }}>
+                  <Ionicons name="sparkles" size={12} color={theme.colors.primary[400]} />
+                </Animated.View>
+                <Animated.View style={{ opacity: tealOpacity }}>
+                  <Ionicons name="sparkles" size={12} color={theme.colors.accent.teal} />
+                </Animated.View>
+              </Animated.View>
+              <Text style={styles.badgeText}>Pure AI</Text>
+            </View>
+            {title && <Text style={styles.title}>{title}</Text>}
+          </View>
+
+          {/* Body */}
+          <View style={styles.body}>
+            {typeof children === 'string' ? (
+              <Text style={styles.bodyText}>{children}</Text>
+            ) : (
+              children
+            )}
+          </View>
         </View>
       </View>
     </View>
@@ -50,22 +165,43 @@ export default function AICaddieCard({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.dark.card,
-    borderRadius: theme.borderRadius.xl,
-    flexDirection: 'row',
+  outerWrapper: {
+    borderRadius: CARD_RADIUS,
     overflow: 'hidden',
-    ...theme.shadows.md,
+    ...Platform.select({
+      ios: {
+        shadowColor: theme.colors.primary[500],
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
-  containerCompact: {
+  outerWrapperCompact: {
     borderRadius: theme.borderRadius.lg,
   },
-  accentBorder: {
-    width: 3,
+  innerCard: {
+    margin: BORDER_WIDTH,
+    backgroundColor: theme.colors.dark.card,
+    borderRadius: INNER_RADIUS,
+    overflow: 'hidden',
+  },
+  shimmerLayer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: '60%',
+    zIndex: 1,
+  },
+  shimmerGradient: {
+    flex: 1,
   },
   content: {
-    flex: 1,
     padding: theme.spacing.lg,
+    zIndex: 2,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -81,6 +217,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: theme.borderRadius.full,
     gap: 4,
+    overflow: 'visible',
   },
   badgeText: {
     fontFamily: theme.fonts.semibold,
