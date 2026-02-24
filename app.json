@@ -17,6 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.puregolf.app",
+      "buildNumber": "2",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Pure needs your location to provide accurate distance measurements and course information.",
         "NSLocationAlwaysUsageDescription": "Pure uses your location to track your position on the golf course.",
